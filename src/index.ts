@@ -33,6 +33,12 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Portfolio API radi" });
 });
 
+// The visitor's own IP (from Cloudflare via nginx, see trust proxy), for the idle easter egg.
+// Echoed back to that visitor only, never stored.
+app.get("/api/whoami", (req, res) => {
+  res.set("Cache-Control", "no-store").json({ ip: req.ip });
+});
+
 app.get("/api/test-db", async (req, res) => {
   try {
     const adminCount = await prisma.admin.count();
