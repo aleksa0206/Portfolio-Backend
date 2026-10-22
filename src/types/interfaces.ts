@@ -66,6 +66,7 @@ export interface IAboutInput {
     linkedinUrl?: string;
     githubUrl?: string;
     contactLinks?: { label: string; value: string }[];
+    skills?: { name: string; description: string }[];
     texts?: Record<string, string>;
     email?: string;
     phone?: string;

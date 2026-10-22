@@ -19,6 +19,7 @@ export class AboutService {
       linkedinUrl: input.linkedinUrl,
       githubUrl: input.githubUrl,
       contactLinks: input.contactLinks,
+      skills: input.skills,
       texts: input.texts,
       email: input.email,
       phone: input.phone,

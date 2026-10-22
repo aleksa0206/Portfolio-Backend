@@ -26,6 +26,7 @@ model About {
   linkedinUrl  String?
   githubUrl    String?
   contactLinks Json?
+  skills       Json?
   texts        Json?
   email        String?
   phone        String?

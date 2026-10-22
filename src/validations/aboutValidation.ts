@@ -26,6 +26,11 @@ export const saveAboutSchema = z.object({
   githubUrl: profileUrl,
   // overrides for small static texts on the site, keyed by text id (defaults live in the frontend)
   texts: z.record(z.string().max(64), z.string().max(2000)).optional(),
+  // skills list written in the admin (description may be empty)
+  skills: z
+    .array(z.object({ name: z.string().trim().min(1).max(40), description: z.string().trim().max(200) }))
+    .max(60)
+    .optional(),
   // extra contact rows; the frontend only renders https values as links
   contactLinks: z
     .array(z.object({ label: z.string().trim().min(1).max(30), value: z.string().trim().min(1).max(300) }))

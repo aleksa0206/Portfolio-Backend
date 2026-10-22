@@ -47,6 +47,16 @@ router.get('/', getAbout);
  *                 description: Overrides for small site texts, keyed by text id
  *                 additionalProperties:
  *                   type: string
+ *               skills:
+ *                 type: array
+ *                 description: Skills list shown in skills.md
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
  *               contactLinks:
  *                 type: array
  *                 description: Extra rows for the contact section
