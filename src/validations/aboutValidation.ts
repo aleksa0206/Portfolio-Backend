@@ -15,6 +15,12 @@ export const saveAboutSchema = z.object({
   photoUrl: imageUrl,
   faviconUrl: imageUrl,
   tagline: z.string().max(500).optional(),
+  // empty clears it; only https links, so nothing like javascript: ends up in an href
+  linkedinUrl: z
+    .string()
+    .max(191)
+    .refine((v) => v === '' || /^https:\/\/\S+$/.test(v))
+    .optional(),
   // overrides for small static texts on the site, keyed by text id (defaults live in the frontend)
   texts: z.record(z.string().max(64), z.string().max(2000)).optional(),
   email: z.string().optional(),

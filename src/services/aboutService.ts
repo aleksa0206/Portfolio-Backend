@@ -16,6 +16,7 @@ export class AboutService {
       photoUrl: input.photoUrl,
       faviconUrl: input.faviconUrl,
       tagline: input.tagline,
+      linkedinUrl: input.linkedinUrl,
       texts: input.texts,
       email: input.email,
       phone: input.phone,

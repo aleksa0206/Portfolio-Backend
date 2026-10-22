@@ -63,6 +63,7 @@ export interface IAboutInput {
     photoUrl?: string;
     faviconUrl?: string;
     tagline?: string;
+    linkedinUrl?: string;
     texts?: Record<string, string>;
     email?: string;
     phone?: string;

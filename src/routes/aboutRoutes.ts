@@ -47,6 +47,9 @@ router.get('/', getAbout);
  *                 description: Overrides for small site texts, keyed by text id
  *                 additionalProperties:
  *                   type: string
+ *               linkedinUrl:
+ *                 type: string
+ *                 example: https://www.linkedin.com/in/username
  *               tagline:
  *                 type: string
  *               faviconUrl:

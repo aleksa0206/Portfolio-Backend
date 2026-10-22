@@ -16,18 +16,19 @@ model Admin {
 }
 
 model About {
-  id         Int      @id @default(autoincrement())
-  fullName   String
-  title      String
-  bio        String   @db.Text
-  photoUrl   String?  @db.MediumText
-  faviconUrl String?  @db.MediumText
-  tagline    String?  @db.Text
-  texts      Json?
-  email      String?
-  phone      String?
-  location   String?
-  updatedAt  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  fullName    String
+  title       String
+  bio         String   @db.Text
+  photoUrl    String?  @db.MediumText
+  faviconUrl  String?  @db.MediumText
+  tagline     String?  @db.Text
+  linkedinUrl String?
+  texts       Json?
+  email       String?
+  phone       String?
+  location    String?
+  updatedAt   DateTime @updatedAt
 }
 
 model Education {
