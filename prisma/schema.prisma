@@ -24,6 +24,7 @@ model About {
   faviconUrl   String?  @db.MediumText
   tagline      String?  @db.Text
   linkedinUrl  String?
+  githubUrl    String?
   contactLinks Json?
   texts        Json?
   email        String?

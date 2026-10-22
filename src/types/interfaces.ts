@@ -64,6 +64,7 @@ export interface IAboutInput {
     faviconUrl?: string;
     tagline?: string;
     linkedinUrl?: string;
+    githubUrl?: string;
     contactLinks?: { label: string; value: string }[];
     texts?: Record<string, string>;
     email?: string;

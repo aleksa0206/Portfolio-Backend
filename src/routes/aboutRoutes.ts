@@ -57,6 +57,9 @@ router.get('/', getAbout);
  *                       type: string
  *                     value:
  *                       type: string
+ *               githubUrl:
+ *                 type: string
+ *                 example: https://github.com/username
  *               linkedinUrl:
  *                 type: string
  *                 example: https://www.linkedin.com/in/username

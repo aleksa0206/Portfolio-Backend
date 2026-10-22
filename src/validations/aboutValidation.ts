@@ -8,6 +8,13 @@ const imageUrl = z
   .refine((v) => !v.startsWith('data:') || /^data:image\/(jpeg|png|webp);base64,/.test(v))
   .optional();
 
+// empty clears it; only https links, so nothing like javascript: ends up in an href
+const profileUrl = z
+  .string()
+  .max(191)
+  .refine((v) => v === '' || /^https:\/\/\S+$/.test(v))
+  .optional();
+
 export const saveAboutSchema = z.object({
   fullName: z.string().min(1, ErrorCode.FULL_NAME_REQUIRED),
   title: z.string().min(1, ErrorCode.TITLE_REQUIRED),
@@ -15,12 +22,8 @@ export const saveAboutSchema = z.object({
   photoUrl: imageUrl,
   faviconUrl: imageUrl,
   tagline: z.string().max(500).optional(),
-  // empty clears it; only https links, so nothing like javascript: ends up in an href
-  linkedinUrl: z
-    .string()
-    .max(191)
-    .refine((v) => v === '' || /^https:\/\/\S+$/.test(v))
-    .optional(),
+  linkedinUrl: profileUrl,
+  githubUrl: profileUrl,
   // overrides for small static texts on the site, keyed by text id (defaults live in the frontend)
   texts: z.record(z.string().max(64), z.string().max(2000)).optional(),
   // extra contact rows; the frontend only renders https values as links
