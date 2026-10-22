@@ -77,3 +77,11 @@ model ContactMessage {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+// Single CV file (id 1), uploaded from the admin panel and downloaded from the site
+model Cv {
+  id        Int      @id @default(1)
+  filename  String
+  data      Bytes    @db.MediumBlob
+  updatedAt DateTime @updatedAt
+}

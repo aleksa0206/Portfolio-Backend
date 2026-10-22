@@ -8,6 +8,7 @@ import licenseRoutes from "./routes/licenseRoutes";
 import projectRoutes from "./routes/projectRoutes";
 import aboutRoutes from "./routes/aboutRoutes";
 import contactRoutes from "./routes/contactRoutes";
+import cvRoutes from "./routes/cvRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import helmet from "helmet";
 import { httpLogger } from "./middleware/httpLogger";
@@ -24,6 +25,8 @@ app.set("trust proxy", 1);
 app.use(helmet());
 app.use(httpLogger);
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:4200" }));
+// the CV upload is a base64 PDF (up to 5 MB); parsed here so the smaller global limit doesn't apply
+app.use("/api/cv", express.json({ limit: "8mb" }));
 // profile photo + favicon travel inline as data URLs in PUT /about
 app.use(express.json({ limit: "300kb" }));
 
@@ -54,6 +57,7 @@ app.use("/api/licenses", licenseRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/about", aboutRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/cv", cvRoutes);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
