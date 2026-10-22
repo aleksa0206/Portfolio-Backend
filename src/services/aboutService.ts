@@ -17,6 +17,7 @@ export class AboutService {
       faviconUrl: input.faviconUrl,
       tagline: input.tagline,
       linkedinUrl: input.linkedinUrl,
+      contactLinks: input.contactLinks,
       texts: input.texts,
       email: input.email,
       phone: input.phone,

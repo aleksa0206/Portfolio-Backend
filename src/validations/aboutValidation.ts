@@ -23,6 +23,11 @@ export const saveAboutSchema = z.object({
     .optional(),
   // overrides for small static texts on the site, keyed by text id (defaults live in the frontend)
   texts: z.record(z.string().max(64), z.string().max(2000)).optional(),
+  // extra contact rows; the frontend only renders https values as links
+  contactLinks: z
+    .array(z.object({ label: z.string().trim().min(1).max(30), value: z.string().trim().min(1).max(300) }))
+    .max(20)
+    .optional(),
   email: z.string().optional(),
   phone: z.string().optional(),
   location: z.string().optional(),

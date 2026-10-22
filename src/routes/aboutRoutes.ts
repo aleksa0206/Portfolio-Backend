@@ -47,6 +47,16 @@ router.get('/', getAbout);
  *                 description: Overrides for small site texts, keyed by text id
  *                 additionalProperties:
  *                   type: string
+ *               contactLinks:
+ *                 type: array
+ *                 description: Extra rows for the contact section
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     label:
+ *                       type: string
+ *                     value:
+ *                       type: string
  *               linkedinUrl:
  *                 type: string
  *                 example: https://www.linkedin.com/in/username
