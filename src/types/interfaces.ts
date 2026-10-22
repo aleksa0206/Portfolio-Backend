@@ -61,6 +61,9 @@ export interface IAboutInput {
     title: string;
     bio: string;
     photoUrl?: string;
+    faviconUrl?: string;
+    tagline?: string;
+    texts?: Record<string, string>;
     email?: string;
     phone?: string;
     location?: string;

@@ -42,6 +42,15 @@ router.get('/', getAbout);
  *                 example: Software Developer
  *               bio:
  *                 type: string
+ *               texts:
+ *                 type: object
+ *                 description: Overrides for small site texts, keyed by text id
+ *                 additionalProperties:
+ *                   type: string
+ *               tagline:
+ *                 type: string
+ *               faviconUrl:
+ *                 type: string
  *               photoUrl:
  *                 type: string
  *               email:

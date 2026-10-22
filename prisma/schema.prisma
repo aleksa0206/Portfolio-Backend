@@ -16,38 +16,41 @@ model Admin {
 }
 
 model About {
-  id        Int      @id @default(autoincrement())
-  fullName  String
-  title     String
-  bio       String   @db.Text
-  photoUrl  String?
-  email     String?
-  phone     String?
-  location  String?
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  fullName   String
+  title      String
+  bio        String   @db.Text
+  photoUrl   String?  @db.MediumText
+  faviconUrl String?  @db.MediumText
+  tagline    String?  @db.Text
+  texts      Json?
+  email      String?
+  phone      String?
+  location   String?
+  updatedAt  DateTime @updatedAt
 }
 
 model Education {
-  id          Int      @id @default(autoincrement())
-  institution String
-  degree      String
+  id           Int       @id @default(autoincrement())
+  institution  String
+  degree       String
   fieldOfStudy String?
-  startDate   DateTime
-  endDate     DateTime?
-  description String?  @db.Text
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
+  startDate    DateTime
+  endDate      DateTime?
+  description  String?   @db.Text
+  order        Int       @default(0)
+  createdAt    DateTime  @default(now())
 }
 
 model License {
-  id           Int       @id @default(autoincrement())
-  name         String
-  issuer       String
-  issueDate    DateTime
-  expiryDate   DateTime?
+  id            Int       @id @default(autoincrement())
+  name          String
+  issuer        String
+  issueDate     DateTime
+  expiryDate    DateTime?
   credentialUrl String?
-  order        Int       @default(0)
-  createdAt    DateTime  @default(now())
+  order         Int       @default(0)
+  createdAt     DateTime  @default(now())
 }
 
 model Project {
