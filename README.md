@@ -1,104 +1,91 @@
 # Portfolio Backend
 
-REST API for a full-stack portfolio website — built with a layered architecture, centralized error handling, request validation, and a full test suite.
+REST API behind my personal site, [aleksao.me](https://aleksao.me). It serves the public content (about, education, licenses, projects, CV), takes messages from the contact form, and lets a single admin edit everything.
 
-**Live API:** https://aleksao.me/api
-**API Documentation:** https://portfolio-backend-production-fef1.up.railway.app/api-docs
+Frontend: [Portfolio-Frontend](https://github.com/aleksa0206/Portfolio-Frontend) (Angular).
 
-## Tech Stack
+API documentation (Swagger UI): [aleksao.me/api-docs](https://aleksao.me/api-docs/)
 
-- **Runtime:** Node.js 22, TypeScript
-- **Framework:** Express
-- **Database:** MySQL, managed with Prisma ORM
-- **Authentication:** JWT with bcrypt password hashing
-- **Validation:** Zod
-- **Logging:** Pino (structured JSON logging)
-- **Documentation:** Swagger / OpenAPI
-- **Testing:** Vitest
-- **Containerization:** Docker (multi-stage builds)
-- **CI/CD:** GitHub Actions
-- **Deployment:** Railway
+## Tech stack
+
+Node.js 22, TypeScript, Express 5, Prisma 5 on MySQL 8, Zod, JWT (`jsonwebtoken`) with `bcryptjs`, Helmet, `express-rate-limit`, Pino, Swagger (`swagger-jsdoc` + `swagger-ui-express`), Vitest, Docker, GitHub Actions.
 
 ## Architecture
 
-The API follows a layered architecture with dependency injection:
+```
+route → controller → service → repository → Prisma → MySQL
+```
 
-Route → Controller → Service → Repository → Prisma → MySQL
+- **Routes** declare the endpoints, apply middleware (auth, Zod validation, rate limits) and carry the Swagger annotations.
+- **Controllers** translate between HTTP and services; they contain no business logic.
+- **Services** hold the logic and receive their repositories through the constructor.
+- **Repositories** are the only place that uses Prisma.
+- A singleton container (`src/container`) creates the repositories and services and wires them together.
 
-- **Routes** define endpoints and apply middleware (auth, validation, rate limiting)
-- **Controllers** handle HTTP request/response, no business logic
-- **Services** contain business logic, receive their dependencies via constructor injection
-- **Repositories** are the only layer that talks to Prisma directly
-- A **DI Container** (Singleton) wires up all repositories and services in one place
+Errors extend `AppError`, which carries an HTTP status and an `ErrorCode`. The user-facing text for each code lives in one map (`src/constants/errorMessages.ts`), and a single error-handling middleware turns any thrown error into the same JSON shape.
 
-### Error handling
+The CV endpoint is the exception to the layering: it stores one PDF in one table row, so the route talks to Prisma directly.
 
-All errors extend a shared `AppError` base class with a defined HTTP status code and an `ErrorCode`. Error codes are separated from their user-facing messages (`ErrorMessages` map), so wording can change in one place without touching business logic. A centralized `errorHandler` middleware converts any thrown error into a consistent JSON response.
+## Endpoints
 
-### Security
+All routes are under `/api`. Write endpoints and the message inbox require the admin's JWT.
 
-- Helmet for HTTP security headers
-- Rate limiting on login and contact form endpoints
-- Zod schema validation on every write endpoint
-- Passwords hashed with bcrypt
-- JWT-based auth with a route guard middleware
-- CORS restricted to the frontend origin
+| Area | Public | Admin only |
+| --- | --- | --- |
+| Auth | `POST /auth/login` (rate limited) | |
+| About | `GET /about` | `PUT /about` (create or update the single record) |
+| Education | `GET /education` | `POST /education`, `PUT`/`DELETE /education/:id` |
+| Licenses | `GET /licenses` | `POST /licenses`, `PUT`/`DELETE /licenses/:id` |
+| Projects | `GET /projects` | `POST /projects`, `PUT`/`DELETE /projects/:id` |
+| Contact | `POST /contact` (rate limited) | `GET /contact`, `PUT /contact/:id/read`, `DELETE /contact/:id` |
+| CV | `GET /cv` (PDF download), `GET /cv/info` | `PUT /cv` (base64 PDF, max 5 MB), `DELETE /cv` |
 
-## Features
+The about record also stores the contact links, the skills list and the editable texts the frontend shows (headings, popup settings).
 
-- **Auth** — JWT login for a single admin account
-- **Education / Licenses / Projects** — full CRUD, public read access, protected write access
-- **About** — single-record upsert (create or update in one endpoint)
-- **Contact** — public message submission, protected inbox for the admin
+## Security
 
-## Project Structure
+- Helmet for HTTP security headers, CORS limited to `CLIENT_URL`
+- Rate limits on login and on the contact form
+- Zod validation on every write endpoint, and small JSON body limits (8 MB only for the CV upload)
+- Admin password hashed with bcrypt; JWT checked by a route guard
 
-src/
-├── config/ # Prisma client, logger setup
-├── container/ # DI container
-├── controllers/ # Request handlers
-├── errors/ # AppError hierarchy
-├── middleware/ # auth, validation, rate limiting, error handler
-├── repositories/ # Prisma data access
-├── routes/ # Express routers + Swagger annotations
-├── services/ # Business logic
-├── types/ # Enums, shared interfaces
-├── validations/ # Zod schemas
-└── index.ts # App entry point
+## Running locally
 
-## Getting Started
+Requires Node.js 22+ and MySQL 8.
 
-### Prerequisites
-
-- Node.js 22+
-- MySQL 8
-
-### Setup
-
+```bash
 npm install
-cp .env.example .env
+cp .env-example .env       # then fill in the values below
 npx prisma migrate dev
-npm run seed
-npm run dev
+npm run seed               # creates the admin account from ADMIN_EMAIL / ADMIN_PASSWORD
+npm run dev                # http://localhost:4000, Swagger UI at /api-docs
+```
 
-Server runs on `http://localhost:4000`. API docs available at `/api-docs`.
+| Variable | Notes |
+| --- | --- |
+| `DATABASE_URL` | MySQL connection string, e.g. `mysql://user:pass@localhost:3306/portfolio` |
+| `PORT` | Default `4000` |
+| `JWT_SECRET`, `JWT_EXPIRES_IN` | Signing key and token lifetime, e.g. `7d` |
+| `CLIENT_URL` | CORS origin. Default `http://localhost:4200` |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Used only by `npm run seed` |
 
-### Scripts
+## Scripts
 
-| Command         | Description                             |
-| --------------- | --------------------------------------- |
-| `npm run dev`   | Start dev server with hot reload        |
-| `npm run build` | Compile TypeScript to `dist/`           |
-| `npm start`     | Run the compiled production build       |
-| `npm test`      | Run the test suite                      |
-| `npm run seed`  | Seed the database with an admin account |
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Dev server with reload |
+| `npm run build` | Compile to `dist/` |
+| `npm start` | Run the compiled build |
+| `npm test` | Vitest unit tests for the services (`src/services/__tests__`) |
+| `npm run test:coverage` | Tests with a coverage report |
+| `npm run seed` | Create the admin account |
+
+CI (GitHub Actions) runs the tests and the build on pushes and pull requests to `main`.
 
 ## Docker
 
+```bash
 docker build -t portfolio-backend .
+```
 
-A `docker-compose.yml` is available separately to run this service alongside MySQL and the frontend.
-
-## Related Repositories
-
-- [portfolio-frontend](https://github.com/aleksa0206/portfolio-frontend) — Angular frontend
+A multi-stage build on `node:22-alpine`. In production the API runs in Docker on my home server together with MySQL and the frontend (nginx proxies `/api` to it), reachable only through a Cloudflare Tunnel.
