@@ -16,10 +16,10 @@ Node.js 22, TypeScript, Express 5, Prisma 5 on MySQL 8, Zod, JWT (`jsonwebtoken`
 route → controller → service → repository → Prisma → MySQL
 ```
 
-- **Routes** declare the endpoints, apply middleware (auth, Zod validation, rate limits) and carry the Swagger annotations.
-- **Controllers** translate between HTTP and services; they contain no business logic.
-- **Services** hold the logic and receive their repositories through the constructor.
-- **Repositories** are the only place that uses Prisma.
+- Routes declare the endpoints, apply middleware (auth, Zod validation, rate limits) and carry the Swagger annotations.
+- Controllers translate between HTTP and services; they contain no business logic.
+- Services hold the logic and receive their repositories through the constructor.
+- Repositories are the only place that uses Prisma.
 - A singleton container (`src/container`) creates the repositories and services and wires them together.
 
 Errors extend `AppError`, which carries an HTTP status and an `ErrorCode`. The user-facing text for each code lives in one map (`src/constants/errorMessages.ts`), and a single error-handling middleware turns any thrown error into the same JSON shape.
